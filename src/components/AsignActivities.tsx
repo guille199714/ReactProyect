@@ -1,16 +1,16 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
-import { Col, Row , Space, Input, Select} from 'antd';
-import { CloseCircleFilled } from '@ant-design/icons'
-import { Button, Form, Modal, List } from 'antd'
+import { Col, Row, Input, Select } from 'antd';
+import { Button, Form, Modal } from 'antd'
 import styled from 'styled-components'
-import TransferActivities from './TransferActivities';
+import ActivityDetails from './ActivityDetails';
+import { mockData, RecordType } from '../utils/fetch-data';
 
 const { Search } = Input
 const { Option } = Select
 
 const SubmitButtonContainer = styled(Form.Item)`
   display: flex;
-  justify-content: end;
+  justify-content: center;
   width: 100%;
   margin: 0;
 `
@@ -20,100 +20,56 @@ type AsignActivitiesProps = {
 }
 
 const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
-  const { setVisible, visible } = props
-  const [componentDisabled, setComponentDisabled] = useState(false)
-
-  const onFormLayoutChange = ({ disabled }: { disabled: boolean }) => {
-    setComponentDisabled(disabled)
-  }
-
-  const handleSubmit = () => {
-    setVisible(false)
-  }
-
-  const Item = styled(Form.Item)`
-  margin-bottom: 5%;
-`
-  const ItemList = styled(List)`
-  `
-  const ItemContainer = styled(List.Item)`
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-`
-
-const ListItems = [
-    "Material 1",
-    "Material 2",
-    "Material 3",
-  ]
-const [items, setItems] = useState(ListItems)
-const handleRemove = (item : string) => {
-    setItems(items.filter(i => i !== item))
-  }
+  const { setVisible, visible } = props;
+  const [selectedItems, setSelectedItems] = useState<RecordType[]>([]);
 
   return (
-    <Modal title='Asignar Actividades' visible={visible} footer={false} onCancel={() => setVisible(false)} width={700} >
-        <Form>
+    <Modal title='Asignar Actividades' visible={visible} footer={false} onCancel={() => setVisible(false)} width={1000} >
         <Row>
-            <Col span={16}>
-                <Space>
-                    &nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    <Search placeholder="Buscar Actividad" allowClear style={{ width: 180 }} enterButton />
-                    <Select
-                        placeholder='Filtrar'
-                            style={{ width: 100 }}
-                    >
-                        <Option value='0'>Todos los ciclos</Option>
-                        <Option value='1'>Primer ciclo</Option>
-                        <Option value='2'>Segundo ciclo</Option>
-                        <Option value='3'>Tercer ciclo</Option>
-                    </Select>
-                </Space>
-            </Col>
-        
+          <Col span={16}>
+            <div>
+              <Search placeholder="Buscar Actividad" allowClear style={{ width: 320 }} enterButton />
+              <div style={{ float: 'right' }}>
+                <Select
+                  placeholder='Filtrar'
+                  style={{ width: 150 }}
+                >
+                  <Option value='0'>Todos los ciclos</Option>
+                  <Option value='1'>Primer ciclo</Option>
+                  <Option value='2'>Segundo ciclo</Option>
+                  <Option value='3'>Tercer ciclo</Option>
+                </Select>
+              </div>
+            </div>
+            <div style={{ paddingTop: '4vh', paddingBottom: '1vh' }}>
+              <ActivityDetails removeRecord={() => undefined} setRecord={(value) => setSelectedItems([ ...selectedItems, value ])} data={mockData}/>
+            </div>
+          </Col>
+          <div style={{borderRight: '1px solid gray', margin: '3%', height: '50vh'}}></div>
+          <Col span={6}>
+            <div>
+              <p style={{ textAlign: "center" }}>
+                Actividades
+                <br></br>
+                Seleccionadas:
+              </p>
+            </div>
 
-            <Col span={8}>
-                <p style={{textAlign: "center"}}>
-                    Actividades
-                    <br></br>
-                    Seleccionadas:
-                </p>
-            </Col>
+            <div style={{ paddingTop: '4vh', paddingBottom: '1vh' }}>
+              <ActivityDetails data={selectedItems} removeRecord={(value) => setSelectedItems([ ...selectedItems.filter(item => item.title !== value.title) ])} setRecord={() => undefined} isSecondaryActivity/>
+            </div>
+
+            <SubmitButtonContainer>
+              <Button onClick = {() => setVisible(false)}>
+                Cancelar
+              </Button>
+              &nbsp;&nbsp;&nbsp;
+              <Button type='primary'>
+                Aceptar
+              </Button>
+            </SubmitButtonContainer>
+          </Col>
         </Row>
-        <Row>
-        <Col span={8}>
-            </Col>
-            <Col span={16}>
-            <ItemList size="small" bordered>
-                {items.map(item =>(
-                  <ItemContainer key={item}>
-                    {item}
-                  <CloseCircleFilled 
-                    style={{ color: '#f5222d', fontSize: '20px' }} 
-                    hidden={visible}
-                    onClick = {() => handleRemove(item)}
-                    />
-                </ItemContainer>
-                ))}
-              </ItemList>
-                <br></br>
-                <br></br>
-            </Col>
-            
-        </Row>
-                <SubmitButtonContainer >
-                    <Button type='primary'  htmlType='submit'>
-                        Cancelar
-                    </Button>
-                    &nbsp;&nbsp;&nbsp;
-                    <Button type='primary' htmlType='submit'>
-                        Aceptar
-                    </Button>
-                </SubmitButtonContainer>
-        </Form>
     </Modal>
   )
 }

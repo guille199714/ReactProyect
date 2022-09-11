@@ -1,10 +1,14 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 
-import { EditOutlined, SearchOutlined } from '@ant-design/icons'
+import { CloseOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons'
 import { CloseCircleFilled } from '@ant-design/icons'
-import { hover } from '@testing-library/user-event/dist/hover'
-import { Button, Form, Input, Modal, Select, Row, Col, Typography, Image, List } from 'antd'
+import { Avatar, List, Button, Form, Input, Modal, Select, Row, Col, Typography, Image } from 'antd'
 import styled from 'styled-components'
+import VirtualList from 'rc-virtual-list';
+import { RecordType } from '../utils/fetch-data'
+
+const { TextArea } = Input;
+const { Title } = Typography;
 
 const ListItems = [
   "Material 1",
@@ -74,18 +78,14 @@ const ItemList = styled(List)`
   
 `
 
-const { TextArea } = Input;
-const { Title } = Typography;
-
 type ActivityDetailsProps = {
-  setVisible: Dispatch<SetStateAction<boolean>>
-  visible: boolean
-  setDisabled: Dispatch<SetStateAction<boolean>>
-  disabled: boolean
+  data: RecordType[],
+  isSecondaryActivity?: boolean,
+  setRecord: (value: RecordType) => void,
+  removeRecord: (value: RecordType) => void,
 }
 
 const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
-  const { setVisible, visible, setDisabled, disabled } = props
   const [items, setItems] = useState(ListItems)
   const [filter, setFilter] = useState<string[]>([])
   const [material, setMaterial] = useState("")
@@ -102,22 +102,6 @@ const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
     setFilter([])
   }
 
-  const onFormLayoutChange = ({ disabled }: { disabled: boolean }) => {
-    setDisabled(disabled)
-  }
-
-  const handleExit = () => {
-    setVisible(false)
-  }
-
-  const handleEdit = () => {
-    setDisabled(!disabled)
-  }
-
-  const handleSubmit = () => {
-    setDisabled(!disabled)
-  }
-
   const handleFilter = (searchWord: string) => {
     setMaterial(searchWord)
     const newFilter = AllMaterials.filter((value) => {
@@ -131,102 +115,30 @@ const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
     }
   }
 
-
   return (
-    <Modal title={<ButtonsContainer style = {{width: '95%'}}><EditOutlined onClick={handleEdit} hidden={!disabled}/></ButtonsContainer>} 
-        visible={visible} footer={false} onCancel={() => setVisible(false)} width={700}>
-      <Form
-        layout='vertical'
-        onFinish={handleExit}
-        onValuesChange={onFormLayoutChange}
-        disabled={disabled}
+    <List bordered>
+      <VirtualList
+        data={props.data}
+        height={400}
+        itemHeight={47}
+        itemKey="title"
       >
-        <Row gutter={30}>
-          <Col flex={2}>
-            <RowContainer>
-              <ImageContainer src="https://i.ytimg.com/vi/gDjMZvYWUdo/maxresdefault.jpg" width={250} height={250} preview={false}></ImageContainer>
-            </RowContainer>
-            <RowContainer hidden={!disabled}>
-            <Title level={2}>
-              Actividad 1
-            </Title>
-            </RowContainer>
-            <Input size="large" defaultValue="Actividad 1" hidden={disabled} style={{textAlign: 'center'}}/>
-          </Col>
-          <Col flex={8}>
-            <Item>
-              <Select placeholder="¡rea">
-                <Select.Option value="area1">¡rea 1</Select.Option>
-                <Select.Option value="area2">¡rea 2</Select.Option>
-              </Select>
-            </Item>
-            <Item>
-              <Select placeholder="Materia">
-                <Select.Option value="area1">Materia 1</Select.Option>
-                <Select.Option value="area2">Materia 2</Select.Option>
-              </Select>
-            </Item>
-            <Item>
-              <Select placeholder="Ciclo">
-                <Select.Option value="area1">Ciclo 1</Select.Option>
-                <Select.Option value="area2">Ciclo 2</Select.Option>
-              </Select>
-            </Item>
-            <Item>
-              <Select placeholder="Grado">
-                <Select.Option value="area1">Grado 1</Select.Option>
-                <Select.Option value="area2">Grado 2</Select.Option>
-              </Select>
-            </Item>
-            <Item label="Materiales:">
-            <div hidden={disabled}>
-                <Input
-                  placeholder="Agregar un material..."
-                  id="searchMaterials"
-                  value={material}
-                  onChange={(e) => handleFilter(e.target.value)}
-                  suffix={<SearchOutlined />}
-                />
-                {filter.length != 0 && (
-                <DataList size="small" bordered style={{zIndex: 2}}>
-                  {filter.map(d =>(
-                    <DataContainer key={d} onClick={() => handleAdd(d)}>
-                      {d}
-                    </DataContainer>
-                  ))}
-                </DataList>
-                )}
-                
-              </div>
-              <ItemList size="small" bordered>
-                {items.map(item =>(
-                  <ItemContainer key={item}>
-                    {item}
-                  <CloseCircleFilled 
-                    style={{ color: '#f5222d', fontSize: '20px' }} 
-                    hidden={disabled}
-                    onClick = {() => handleRemove(item)}
-                    />
-                </ItemContainer>
-                ))}
-              </ItemList>
-            </Item>
-            <Item label="DescripciÛn:">
-              <TextArea rows={4} />
-            </Item>
-          </Col>
-        </Row>
-        <ButtonsContainer style = {{width: '100%'}}>
-          <Button type='primary' onClick={handleSubmit} hidden={disabled}>
-            Aceptar
-          </Button>
-          <Button type='default' onClick={handleExit} hidden={disabled} style={{ marginLeft: '7px' }}>
-            Cancelar
-          </Button>
-        </ButtonsContainer>
-      </Form>
-    </Modal>
-  )
+        {(item: RecordType) => (
+          <List.Item
+            onClick={() => props.setRecord(item)} key={item.title}
+            style={{ textAlign: 'center', cursor: 'pointer' }}
+          >
+            <List.Item.Meta
+              title={item.title}
+            />
+            { props.isSecondaryActivity &&
+              (<Button type="primary"  onClick={() => props.removeRecord(item)} key={item.title} danger shape="circle" size={"small"} icon={<CloseOutlined />} />)
+            }
+          </List.Item>
+        )}
+      </VirtualList>
+    </List>
+  );
 }
 
 export default ActivityDetails
