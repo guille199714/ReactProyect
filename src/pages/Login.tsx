@@ -38,7 +38,7 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const { mutate, isLoading, error } = useMutation(useLogin, {
+  const { mutate } = useMutation(useLogin, {
     onSuccess: () => {
       navigate('/home')
     },

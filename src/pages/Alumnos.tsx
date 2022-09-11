@@ -39,10 +39,10 @@ const Alumnos: React.FC = () => {
       <Title level={4} style={{ textAlign: 'right', marginBottom: '2%', marginRight: '3%' }}>
         <Space>
           Asignar actividades:
-          <Button type='primary' disabled={seleccionados.length == 0 } onClick={handleEdit}>
+          <Button type='primary' disabled={seleccionados.length === 0 } onClick={handleEdit}>
             Para hacer
           </Button>
-          <Button type='primary' disabled={seleccionados.length == 0} onClick={handleEdit}>
+          <Button type='primary' disabled={seleccionados.length === 0} onClick={handleEdit}>
             Para presentar
           </Button>
         </Space>

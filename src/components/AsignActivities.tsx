@@ -22,13 +22,25 @@ type AsignActivitiesProps = {
 const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
   const { setVisible, visible } = props;
   const [selectedItems, setSelectedItems] = useState<RecordType[]>([]);
+  const [items, setItems] = useState<RecordType[]>(mockData);
+
+  const searchByTitle = (value: string) =>
+    setItems(mockData.filter((elem) => elem.title.toUpperCase().includes(value.toUpperCase())));
+  
+  const addActivitiesInSelectedItems = (value: RecordType) => {
+    if (selectedItems.includes(value)) {
+      return;
+    }
+    setSelectedItems([ ...selectedItems, value ])
+  }
 
   return (
     <Modal title='Asignar Actividades' visible={visible} footer={false} onCancel={() => setVisible(false)} width={1000} >
         <Row>
           <Col span={16}>
             <div>
-              <Search placeholder="Buscar Actividad" allowClear style={{ width: 320 }} enterButton />
+              <Search
+                onSearch={(value: string) => searchByTitle(value)} placeholder="Buscar Actividad" allowClear style={{ width: 320 }} enterButton />
               <div style={{ float: 'right' }}>
                 <Select
                   placeholder='Filtrar'
@@ -42,10 +54,14 @@ const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
               </div>
             </div>
             <div style={{ paddingTop: '4vh', paddingBottom: '1vh' }}>
-              <ActivityDetails removeRecord={() => undefined} setRecord={(value) => setSelectedItems([ ...selectedItems, value ])} data={mockData}/>
+              <ActivityDetails
+                removeRecord={() => undefined}
+                setRecord={(value: RecordType) => addActivitiesInSelectedItems(value)}
+                data={items}
+              />
             </div>
           </Col>
-          <div style={{borderRight: '1px solid gray', margin: '3%', height: '50vh'}}></div>
+          <div style={{ borderRight: '1px solid gray', borderColor: '#f0f0f0', margin: '1% 3% 0 3%', height: '70vh'}}></div>
           <Col span={6}>
             <div>
               <p style={{ textAlign: "center" }}>
@@ -55,7 +71,7 @@ const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
               </p>
             </div>
 
-            <div style={{ paddingTop: '4vh', paddingBottom: '1vh' }}>
+            <div style={{ paddingBottom: '1vh' }}>
               <ActivityDetails data={selectedItems} removeRecord={(value) => setSelectedItems([ ...selectedItems.filter(item => item.title !== value.title) ])} setRecord={() => undefined} isSecondaryActivity/>
             </div>
 

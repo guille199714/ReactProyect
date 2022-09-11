@@ -40,7 +40,7 @@ const ListaAlumnos: React.FC<ListaAlumnosProps> = (props) => {
                     props.setSeleccionados([...props.seleccionados, item])
                   } else {
                     props.setSeleccionados(props.seleccionados.filter(function (e) {
-                      return e != item
+                      return e !== item
                     }))
                   }
                 }} />
