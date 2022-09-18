@@ -3,16 +3,23 @@ import React from 'react'
 import { CloseOutlined } from '@ant-design/icons'
 import { List, Button } from 'antd'
 import VirtualList from 'rc-virtual-list';
-import { RecordType } from '../utils/fetch-data'
 
-type ActivityDetailsProps = {
+
+type ActivitiesListProps = {
   data: RecordType[],
-  isSecondaryActivity?: boolean,
+  isSelectedActivity?: boolean,
   setRecord: (value: RecordType) => void,
   removeRecord: (value: RecordType) => void,
 }
 
-const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
+type RecordType = {
+  title: string;
+  materia: String;
+  secuencia: String;
+  unidad: String;
+}
+
+const ActivitiesList: React.FC<ActivitiesListProps> = (props) => {
   const addNewValueToList = (item: RecordType) => {
     props.setRecord(item)
   }
@@ -35,7 +42,7 @@ const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
             <List.Item.Meta
               title={item.title}
             />
-            { props.isSecondaryActivity &&
+            { props.isSelectedActivity &&
               (<Button type="primary" style={{position: 'absolute', marginTop: '-3.4vh', marginLeft: '12vw' }} onClick={() => props.removeRecord(item)} key={item.title} danger shape="circle" size={"small"} icon={<CloseOutlined />} />)
             }
           </List.Item>
@@ -45,4 +52,4 @@ const ActivityDetails: React.FC<ActivityDetailsProps> = (props) => {
   );
 }
 
-export default ActivityDetails
+export default ActivitiesList

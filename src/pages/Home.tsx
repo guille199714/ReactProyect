@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 import { EditOutlined } from '@ant-design/icons'
 import { Divider } from 'antd'
 
-import TestForm from '../components/TestForm'
 import Title1 from '../components/Title'
+import CreateParent from '../components/CreateParent'
+import CreateParentModal from '../components/CreateParentModal'
 
 const Home: React.FC = () => {
   const [visibleEditModal, setVisibleEditModal] = useState(false)
@@ -18,7 +19,10 @@ const Home: React.FC = () => {
       <Divider orientation='right' orientationMargin='0'>
         <EditOutlined onClick={handleEdit} />
       </Divider>
-      <TestForm setVisible={setVisibleEditModal} visible={visibleEditModal} />
+      {/*<TestForm setVisible={setVisibleEditModal} visible={visibleEditModal} />*/}
+      {/*<CreateTeacher setVisible={setVisibleEditModal} visible={visibleEditModal}/>*/}
+      {/* <CreateParent setVisible={setVisibleEditModal} visible={visibleEditModal}/> */}  
+        <CreateParentModal setVisible={setVisibleEditModal} visible={visibleEditModal}/>
       <Title1 text='Esto es un titulo'/>
     </>
   )

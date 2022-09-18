@@ -2,8 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Col, Row, Input, Select } from 'antd';
 import { Button, Form, Modal } from 'antd'
 import styled from 'styled-components'
-import ActivityDetails from './ActivityDetails';
-import { mockData, RecordType } from '../utils/fetch-data';
+import ActivitiesList from './ActivitiesList';
 
 const { Search } = Input
 const { Option } = Select
@@ -14,6 +13,21 @@ const SubmitButtonContainer = styled(Form.Item)`
   width: 100%;
   margin: 0;
 `
+
+type RecordType = {
+  title: string;
+  materia: String;
+  secuencia: String;
+  unidad: String;
+}
+
+const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => ({
+  title: `Actividad${i + 1}`,
+  materia: `Materia${i + 1}`,
+  secuencia: `Secuencia ${2000 + i + 1}`,
+  unidad: (Math.random()* (20 - 0) + 0).toString(),
+}));
+
 type AsignActivitiesProps = {
   setVisible: Dispatch<SetStateAction<boolean>>
   visible: boolean
@@ -45,16 +59,16 @@ const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
                 <Select
                   placeholder='Filtrar'
                   style={{ width: 150 }}
+                  onChange = {(value: string) => searchByTitle(value)}
                 >
-                  <Option value='0'>Todos los ciclos</Option>
-                  <Option value='1'>Primer ciclo</Option>
-                  <Option value='2'>Segundo ciclo</Option>
-                  <Option value='3'>Tercer ciclo</Option>
+                  <Option value='0'>Materia</Option>
+                  <Option value='1'>Secuencia</Option>
+                  <Option value='2'>Unidad</Option>
                 </Select>
               </div>
             </div>
             <div style={{ paddingTop: '4vh', paddingBottom: '1vh' }}>
-              <ActivityDetails
+              <ActivitiesList
                 removeRecord={() => undefined}
                 setRecord={(value: RecordType) => addActivitiesInSelectedItems(value)}
                 data={items}
@@ -70,20 +84,21 @@ const AsignActivities: React.FC<AsignActivitiesProps> = (props) => {
                 Seleccionadas:
               </p>
             </div>
-
+            <Form> 
             <div style={{ paddingBottom: '1vh' }}>
-              <ActivityDetails data={selectedItems} removeRecord={(value) => setSelectedItems([ ...selectedItems.filter(item => item.title !== value.title) ])} setRecord={() => undefined} isSecondaryActivity/>
+              <ActivitiesList data={selectedItems} removeRecord={(value) => setSelectedItems([ ...selectedItems.filter(item => item.title !== value.title) ])} setRecord={() => undefined} isSelectedActivity/>
             </div>
 
             <SubmitButtonContainer>
-              <Button onClick = {() => setVisible(false)}>
+              <Button onClick = {() => {setVisible(false) ; setSelectedItems([]);}} >
                 Cancelar
               </Button>
               &nbsp;&nbsp;&nbsp;
-              <Button type='primary'>
+              <Button type='primary' onClick = {() => {setVisible(false) ; setSelectedItems([]);}}>
                 Aceptar
-              </Button>
-            </SubmitButtonContainer>
+              </Button >
+            </SubmitButtonContainer >
+            </Form>
           </Col>
         </Row>
     </Modal>
