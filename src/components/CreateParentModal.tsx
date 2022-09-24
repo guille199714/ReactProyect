@@ -316,19 +316,19 @@ const CreateStudentModal: React.FC<CreateStudentProps> = (props) => {
               </Form.Item>
               <Row >
                 <Space direction='vertical' style={{ width: '100%' }}>
-                  <Form.Item name="ciclo" rules={[{ required: true, message: 'Inserir a sua mensagem aqui' }]}>
+                  <Form.Item name="ciclo" rules={[{ required: true, message: 'Seleccione un ciclo' }]}>
                     <Select placeholder="Ciclo" style={{ width: '100%' }} >
                       <Select.Option value="Ciclo uno">Ciclo Uno </Select.Option>
                       <Select.Option value="Ciclo dos">Ciclo Dos </Select.Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item name="grado" rules={[{ required: true, message: 'Inserir a sua mensagem aqui' }]}>
+                  <Form.Item name="grado" rules={[{ required: true, message: 'Seleccione un grado' }]}>
                     <Select placeholder="Grado" style={{ width: '100%' }}>
                       <Select.Option value="Grado uno">Grado Uno </Select.Option>
                       <Select.Option value="Grado dos">Grado Dos </Select.Option>
                     </Select>
                   </Form.Item>
-                  <Form.Item name="grupo" rules={[{ required: true, message: 'Inserir a sua mensagem aqui' }]}>
+                  <Form.Item name="grupo" rules={[{ required: true, message: 'Seleccione un grupo' }]}>
                     <Select placeholder="Grupo" style={{ width: '100%' }}>
                       <Select.Option value="Grupo uno">Grupo Uno </Select.Option>
                       <Select.Option value="Grupo dos">Grupo Dos </Select.Option>

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Space, Typography, Button } from 'antd'
 
 import TarjetaAlumnos from '../components/TarjetaAlumnos'
-import AsignActivities from '../components/AsignActivities'
+import AssignActivities from '../components/AssignActivities'
 
 const { Title } = Typography
 
@@ -47,7 +47,7 @@ const Alumnos: React.FC = () => {
           </Button>
         </Space>
       </Title>
-      <AsignActivities setVisible={setVisibleEditModal} visible={visibleEditModal} />
+      <AssignActivities setVisible={setVisibleEditModal} visible={visibleEditModal} />
       <TarjetaAlumnos
         data={data}
         seleccionados={seleccionados}
