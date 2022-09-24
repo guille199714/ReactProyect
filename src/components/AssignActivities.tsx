@@ -67,7 +67,6 @@ const sequenceMockData = {
   todas: [],
   secuencia2022: ['Unidad1', 'Unidad2'],
   // secuencia2021: ['Unidad1', 'Unidad2', 'Unidad3', 'Unidad4']
-
 }
 
 const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => {
@@ -310,7 +309,10 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
       footer={false}
       onCancel={() => {
         setVisible(false)
+        setItems(mockData)
         setSelectedItems([])
+        setAreaValue('Todas')
+        setSequenceValue('Todas')
       }}
       width={1050}
       maskClosable={false}
@@ -320,8 +322,8 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
           <div>
             <Search
               onChange={(value) => searchByTitle(value.target.value, filteredItems)}
-              placeholder='Buscar Actividad'
-              allowClear
+              placeholder = 'Buscar Actividad'
+              allowClear = {true}
               style={{ width: 250 }}
               enterButton
             />
@@ -387,7 +389,10 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
               <Button
                 onClick={() => {
                   setVisible(false)
+                  setItems(mockData)
                   setSelectedItems([])
+                  setAreaValue('Todas')
+                  setSequenceValue('Todas')
                 }}
               >
                 Cancelar
@@ -397,7 +402,10 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
                 type='primary'
                 onClick={() => {
                   setVisible(false)
+                  setItems(mockData)
                   setSelectedItems([])
+                  setAreaValue('Todas')
+                  setSequenceValue('Todas')
                 }}
               >
                 Aceptar
