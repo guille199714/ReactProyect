@@ -31,12 +31,22 @@ const areaArrayData = [
   { key: 'Lengua', value: 'lengua' }
 ]
 
+const sequenceArrayData = [
+  { sequenceKey: 'Secuencia2022', sequenceValue: 'secuencia2022'},
+]
+
 interface Subcategory {
   todas: string
   cienciaycultura: string
   matematica: string
   vidapractica: string
   lengua: string
+}
+
+interface Sequence {
+  todas: string
+  secuencia2022: string
+  // secuencia2021: string
 }
 
 const subCategoryData = {
@@ -53,17 +63,32 @@ const subCategoryData = {
   lengua: ['Lectura', 'Escritura', 'Gramática']
 }
 
+const sequenceMockData = {
+  todas: [],
+  secuencia2022: ['Unidad1', 'Unidad2'],
+  // secuencia2021: ['Unidad1', 'Unidad2', 'Unidad3', 'Unidad4']
+
+}
+
 const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => {
   const area = areaArrayData[Math.floor(Math.random() * areaArrayData.length)];
   const { key, value } = area;
   const materias = subCategoryData[value as keyof Subcategory]
 
+  const secuencia = sequenceArrayData[Math.floor(Math.random() * sequenceArrayData.length)];
+  const {sequenceKey, sequenceValue } = secuencia;
+  const unidades = sequenceMockData[sequenceValue as keyof Sequence]
+
   return {
     title: `Actividad${i + 1}`,
     area: key,
     materia: materias[Math.floor(Math.random() * materias.length)],
-    secuencia: `Secuencia${Math.floor(Math.random() * (2022 - 2021 + 1) + 2021)}`,
-    unidad: `Unidad${Math.floor(Math.random() * (2 - 1 + 1) + 1)}`,
+
+    secuencia: sequenceKey,
+    unidad: unidades[Math.floor(Math.random() * unidades.length)],
+
+    // secuencia: `Secuencia${Math.floor(Math.random() * (2022 - 2021 + 1) + 2021)}`,
+    // unidad: `Unidad${Math.floor(Math.random() * (2 - 1 + 1) + 1)}`,
   }
 })
 
@@ -86,10 +111,28 @@ const sequenceData = [
       },
     ],
   },
-  {
-    title: 'Secuencia2021',
-    value: 'Secuencia2021',
-  },
+  // {
+  //   title: 'Secuencia2021',
+  //   value: 'Secuencia2021',
+  //   children: [
+  //     {
+  //       title: 'Unidad1',
+  //       value: 'Unidad1',
+  //     },
+  //     {
+  //       title: 'Unidad2',
+  //       value: 'Unidad2',
+  //     },
+  //     {
+  //       title: 'Unidad3',
+  //       value: 'Unidad3',
+  //     },
+  //     {
+  //       title: 'Unidad4',
+  //       value: 'Unidad4',
+  //     },
+  //   ],
+  // },
 ]
 
 const areaData = [
@@ -208,10 +251,22 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
       setSequenceValue(newValue)
       return;
     }
-    setItems(mockData.filter((elem) => elem.unidad === newValue || elem.secuencia === newValue))
-    // mockData.filter((elem) => elem.unidad === newValue || elem.secuencia === newValue, setSequenceValue(newValue))
+    // --------------------------------------------------------------------------------------
+
+    const data = mockData.filter((elem) =>
+    convertToUpperCase(elem.unidad) === convertToUpperCase(newValue) || convertToUpperCase(elem.secuencia) === convertToUpperCase(newValue))
+
+    setItems(data)
+    setFilteredItems(data)
     setSequenceValue(newValue)
     setAreaValue('Todas')
+
+    // --------------------------------------------------------------------------------------
+
+    // setItems(mockData.filter((elem) => elem.unidad === newValue || elem.secuencia === newValue))
+    // mockData.filter((elem) => elem.unidad === newValue || elem.secuencia === newValue, setSequenceValue(newValue))
+    // setSequenceValue(newValue)
+    // setAreaValue('Todas')
   }
 
   const convertToUpperCase = (value: string) => value.toUpperCase().trim();
