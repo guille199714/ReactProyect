@@ -24,17 +24,6 @@ type RecordType = {
   unidad: string
 }
 
-const areaArrayData = [
-  { key: 'Ciencia y cultura', value: 'cienciaycultura'},
-  { key: 'Matemática', value: 'matematica' },
-  { key: 'Vida práctica', value: 'vidapractica' },
-  { key: 'Lengua', value: 'lengua' }
-]
-
-const sequenceArrayData = [
-  { sequenceKey: 'Secuencia2022', sequenceValue: 'secuencia2022'},
-]
-
 interface Subcategory {
   todas: string
   cienciaycultura: string
@@ -46,8 +35,20 @@ interface Subcategory {
 interface Sequence {
   todas: string
   secuencia2022: string
-  // secuencia2021: string
+  secuencia2021: string
 }
+
+const areaArrayData = [
+  { key: 'Ciencia y cultura', value: 'cienciaycultura' },
+  { key: 'Matemática', value: 'matematica' },
+  { key: 'Vida práctica', value: 'vidapractica' },
+  { key: 'Lengua', value: 'lengua' }
+]
+
+const sequenceArrayData = [
+  { sequenceKey: 'Secuencia2022', sequenceValue: 'secuencia2022' },
+  { sequenceKey: 'Secuencia2021', sequenceValue: 'secuencia2021' },
+]
 
 const subCategoryData = {
   todas: [],
@@ -65,9 +66,8 @@ const subCategoryData = {
 
 const sequenceMockData = {
   todas: [],
-  secuencia2022: ['Unidad1', 'Unidad2'],
-  // secuencia2021: ['Unidad1', 'Unidad2', 'Unidad3', 'Unidad4']
-
+  secuencia2022: ['unidad-1-2022', 'unidad-2-2022'],
+  secuencia2021: ['unidad-1-2021', 'unidad-2-2021', 'unidad-3-2021', 'unidad-4-2021']
 }
 
 const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => {
@@ -76,19 +76,19 @@ const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => {
   const materias = subCategoryData[value as keyof Subcategory]
 
   const secuencia = sequenceArrayData[Math.floor(Math.random() * sequenceArrayData.length)];
-  const {sequenceKey, sequenceValue } = secuencia;
+  const { sequenceKey, sequenceValue } = secuencia;
   const unidades = sequenceMockData[sequenceValue as keyof Sequence]
 
   return {
     title: `Actividad${i + 1}`,
     area: key,
     materia: materias[Math.floor(Math.random() * materias.length)],
-
     secuencia: sequenceKey,
     unidad: unidades[Math.floor(Math.random() * unidades.length)],
 
     // secuencia: `Secuencia${Math.floor(Math.random() * (2022 - 2021 + 1) + 2021)}`,
-    // unidad: `Unidad${Math.floor(Math.random() * (2 - 1 + 1) + 1)}`,
+    // unidad-1-2022
+    // unidad: `unidad-${(i + 1)}-seque`,
   }
 })
 
@@ -103,36 +103,36 @@ const sequenceData = [
     children: [
       {
         title: 'Unidad1',
-        value: 'Unidad1',
+        value: 'unidad-1-2022',
       },
       {
         title: 'Unidad2',
-        value: 'Unidad2',
+        value: 'unidad-2-2022',
       },
     ],
   },
-  // {
-  //   title: 'Secuencia2021',
-  //   value: 'Secuencia2021',
-  //   children: [
-  //     {
-  //       title: 'Unidad1',
-  //       value: 'Unidad1',
-  //     },
-  //     {
-  //       title: 'Unidad2',
-  //       value: 'Unidad2',
-  //     },
-  //     {
-  //       title: 'Unidad3',
-  //       value: 'Unidad3',
-  //     },
-  //     {
-  //       title: 'Unidad4',
-  //       value: 'Unidad4',
-  //     },
-  //   ],
-  // },
+  {
+    title: 'Secuencia2021',
+    value: 'Secuencia2021',
+    children: [
+      {
+        title: 'Unidad1',
+        value: 'unidad-1-2021',
+      },
+      {
+        title: 'Unidad2',
+        value: 'unidad-2-2021',
+      },
+      {
+        title: 'Unidad3',
+        value: 'unidad-3-2021',
+      },
+      {
+        title: 'Unidad4',
+        value: 'unidad-4-2021',
+      },
+    ],
+  },
 ]
 
 const areaData = [
@@ -239,10 +239,13 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
   const { visible, setVisible } = props
   const [selectedItems, setSelectedItems] = useState<RecordType[]>([])
   const [items, setItems] = useState<RecordType[]>(mockData)
+  const [search, setSearch] = useState<string>('')
   // value para el tree select
   const [sequenceValue, setSequenceValue] = useState<string>()
   const [areaValue, setAreaValue] = useState<string>()
   const [filteredItems, setFilteredItems] = useState<RecordType[]>(mockData)
+
+  const convertToUpperCase = (value: string) => value.toUpperCase().trim();
 
   const filterBySequence = (newValue: string) => {
     if (newValue === 'Todas') {
@@ -254,7 +257,7 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
     // --------------------------------------------------------------------------------------
 
     const data = mockData.filter((elem) =>
-    convertToUpperCase(elem.unidad) === convertToUpperCase(newValue) || convertToUpperCase(elem.secuencia) === convertToUpperCase(newValue))
+      convertToUpperCase(elem.unidad) === convertToUpperCase(newValue) || convertToUpperCase(elem.secuencia) === convertToUpperCase(newValue))
 
     setItems(data)
     setFilteredItems(data)
@@ -269,8 +272,6 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
     // setAreaValue('Todas')
   }
 
-  const convertToUpperCase = (value: string) => value.toUpperCase().trim();
-
   const filterByArea = (newValue: string) => {
     if (newValue === 'Todas') {
       setItems(mockData)
@@ -280,7 +281,7 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
     }
 
     const data = mockData.filter((elem) =>
-    convertToUpperCase(elem.materia) === convertToUpperCase(newValue) || convertToUpperCase(elem.area) === convertToUpperCase(newValue))
+      convertToUpperCase(elem.materia) === convertToUpperCase(newValue) || convertToUpperCase(elem.area) === convertToUpperCase(newValue))
 
     setItems(data)
     setFilteredItems(data)
@@ -289,10 +290,11 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
   }
 
   const searchByTitle = (value: string, filteredItems: RecordType[]) => {
+    setSearch(value)
     if (!value) {
       return true
     }
-    
+
     setItems(filteredItems.filter((elem) => elem.title.toUpperCase().includes(value.toUpperCase())))
   }
 
@@ -301,6 +303,14 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
       return
     }
     setSelectedItems([...selectedItems, value])
+  }
+
+  const clearAllFilter = () => {
+    setItems(mockData)
+    setFilteredItems(mockData)
+    setAreaValue(undefined)
+    setSequenceValue(undefined)
+    setSearch('')
   }
 
   return (
@@ -314,11 +324,13 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
       }}
       width={1050}
       maskClosable={false}
+      afterClose={() => clearAllFilter()}
     >
       <Row>
         <Col span={16}>
           <div>
             <Search
+              value={search}
               onChange={(value) => searchByTitle(value.target.value, filteredItems)}
               placeholder='Buscar Actividad'
               allowClear
