@@ -19,7 +19,7 @@ type RecordType = {
   unidad: string
 }
 
-const ActivitiesList: React.FC<ActivitiesListProps> = (props) => {
+const ActivitiesList: React.FC<ActivitiesListProps> = (props: ActivitiesListProps) => {
   const addNewValueToList = (item: RecordType) => {
     props.setRecord(item)
   }
