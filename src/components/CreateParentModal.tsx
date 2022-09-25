@@ -9,7 +9,6 @@ import {
 import type { SelectProps } from 'antd/es/select';
 
 import StudentList from './StudentList';
-// import { RecordType, mockData } from '../utils/fetch-data'
 
 const getRandomInt = (max: number, min = 0) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -38,11 +37,6 @@ type RecordType = {
   title: string
 }
 
-const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => ({
-  key: i.toString(),
-  title: `Hijo/pupilo${i + 1}`,
-}))
-
 type CreateParentProps = {
   setVisible: Dispatch<SetStateAction<boolean>>
   visible: boolean
@@ -50,35 +44,50 @@ type CreateParentProps = {
 
 const CreateParentModal: React.FC<CreateParentProps> = (props) => {
   const { setVisible, visible } = props
-  const [modal, setModal] = useState(false);
-  const openModal = () => {
-    setModal(true);
-  }
-
-  const closeModal = () => {
-    
-  }
+  const [options, setOptions] = useState<SelectProps<object>['options']>([])
+  const [selectedStudents, setSelectedStudent] = useState<RecordType[]>([])
+  const [componentDisabled, setComponentDisabled] = useState<boolean>(true)
 
   const [studentForm] = Form.useForm()
   const [parentForm] = Form.useForm()
-  const [studentSearch] = Form.useForm()
 
-  const [studentName, setStudentName] = useState('');
-  const [studentSurname, setStudentSurname] = useState('');
-  const [studentMail, setStudentMail] = useState('');
-  const [studentPassword, setStudentPassword] = useState('');
+  const [studentName, setStudentName] = useState('')
+  const [searchHijo, setSearchHijo] = useState('')
+  const [studentSurname, setStudentSurname] = useState('')
+  const [studentMail, setStudentMail] = useState('')
+  const [studentPassword, setStudentPassword] = useState('')
 
   const [parentName, setParentName] = useState('')
-  const [parentSurame, setParentSurname] = useState('')
+  const [parentSurname, setParentSurname] = useState('')
   const [parentMail, setParentMail] = useState('')
   const [parentPassword, setParentPassword] = useState('')
+
+  const closeModal = () => {
+    setStudentName('')
+    setStudentSurname('')
+    setStudentMail('')
+    setStudentPassword('')
+    setSelectedStudent([])
+
+    setSearchHijo('')
+
+    setParentName('')
+    setParentSurname('')
+    setParentMail('')
+    setParentPassword('')
+
+    parentForm.resetFields()
+    studentForm.resetFields()
+
+    setVisible(false)
+    setComponentDisabled(true)
+  }
 
   const handleSubmitParent = () => {
     if (selectedStudents.length > 0) {
       setSelectedStudent([])
       parentForm.resetFields()
       studentForm.resetFields()
-      studentSearch.resetFields()
       setVisible(false)
     } else {
       message.error('Debe Ingresar todos los datos antes de confirmar')
@@ -103,21 +112,22 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
 
     setComponentDisabled(true)
   }
-  const [options, setOptions] = useState<SelectProps<object>['options']>([]);
-
 
   const handleSearch = (value: string) => {
     setOptions(value ? searchResult(value) : []);
   };
 
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const handleAddNewStudent = () => {
     setComponentDisabled(false)
   };
 
-  const onSelect = (value: string) => {
-    console.log('onSelect', value);
-  };
+  const addStudentInSelectedStudents = (value: RecordType) => {
+    if (selectedStudents.findIndex((elem: RecordType) => elem.key === value.key) >= 0) {
+      return;
+    }
+
+    setSelectedStudent([...selectedStudents, value])
+  }
 
   const onSearchSelect = (value: string) => {
     if (value.length > 0) {
@@ -129,28 +139,13 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
     }
   }
 
-  const [selectedStudents, setSelectedStudent] = useState<RecordType[]>([])
-  const [student, setStudent] = useState<RecordType[]>(mockData)
-
-  const addStudentInSelectedStudents = (value: RecordType) => {
-    if (selectedStudents.includes(value)) {
-      return;
-    }
-    setSelectedStudent([...selectedStudents, value])
-  }
-
-
   return (
     <div className="createParent">
-      {/*<StyledSpace direction='vertical' size={40} align='center' style={{ backgroundColor: '#fff' }}>
-        <br /><br />
-        <Button type="primary" onClick={openModal}> Crear Padre</Button>
-        </StyledSpace>*/}
-
       <Modal 
         visible={visible}
         title="Crear Padre"
-        onCancel={closeModal}
+        onCancel={() => closeModal()}
+        afterClose={() => closeModal()}
         maskClosable = {false}
         footer = {null}
         width={700}>
@@ -158,6 +153,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
         <Row>
           <Col flex={24}>
             <Form
+              form={parentForm}
               name='Parent'
               initialValues={{ remember: true }}
               onFinish={handleSubmitParent}
@@ -172,6 +168,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                     rules={[{ required: true, message: 'Debe ingresar un Nombre' }]}>
                     <Input
                       placeholder='Nombre'
+                      value={parentName}
                       style={{ width: '100%' }}
                       prefix={<UserOutlined />}
                       onChange={(event) => {
@@ -184,6 +181,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                     rules={[{ required: true, message: 'Debe ingresar un apellido' }]}>
                     <Input
                       placeholder='Apellido'
+                      value={parentSurname}
                       style={{ width: '100%' }}
                       prefix={<UserOutlined />}
                       onChange={(event) => {
@@ -198,6 +196,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                       { type: 'email', message: 'Ingrese un Email valido!' }
                     ]}>
                     <Input
+                      value={parentMail}
                       placeholder='E-mail'
                       style={{ width: '100%' }}
                       prefix={<UserOutlined />}
@@ -211,6 +210,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                     name='ParentPassword'
                     rules={[{ required: true, message: 'Debe ingresar una Contraseña' }]}>
                     <Input.Password
+                      value={parentPassword}
                       placeholder='Contraseña'
                       style={{ width: '100%' }}
                       prefix={<LockOutlined />}
@@ -228,7 +228,10 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                   style={{ width: '100%' }}
                   options={options}
                   onSelect={onSearchSelect}
-                  onSearch={handleSearch}>
+                  onSearch={handleSearch}
+                  value={searchHijo}
+                  onChange={(value) => setSearchHijo(value)}
+                >
 
                   <Input.Search size="large" placeholder="input here" enterButton />
                 </AutoComplete>
@@ -294,6 +297,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                 name='StudentName'
                 rules={[{ required: true, message: 'Debe ingresar un Usuario' }]}>
                 <Input
+                  value={studentName}
                   placeholder='Nombre'
                   style={{ width: '100%' }}
                   prefix={<UserOutlined />}
@@ -307,6 +311,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                 name='StudentSurname'
                 rules={[{ required: true, message: 'Debe ingresar un apellido' }]}>
                 <Input
+                  value={studentSurname}
                   placeholder='Apellido'
                   style={{ width: '100%' }}
                   prefix={<UserOutlined />}
@@ -325,6 +330,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                 ]}>
                 <Input
                   placeholder='Email'
+                  value={studentMail}
                   style={{ width: '100%' }}
                   prefix={<UserOutlined />}
                   onChange={(event) => {
@@ -337,6 +343,7 @@ const CreateParentModal: React.FC<CreateParentProps> = (props) => {
                 name='StudentPassword'
                 rules={[{ required: true, message: 'Debe ingresar una contraseña' }]}>
                 <Input.Password
+                  value={studentPassword}
                   placeholder='Contraseña'
                   style={{ width: '100%' }}
                   prefix={<LockOutlined />}

@@ -15,13 +15,6 @@ type RecordType = {
   }
 
 const StudentList:React.FC<StudentListProps> = (props) =>{
-    const addNewStudentToList = (item: RecordType) => {
-        props.setSelectedStudent(item)
-      }
-
-    const {students, setSelectedStudent, removeStudent} = props
-
-
     return(
         <>
             <List bordered
@@ -44,7 +37,6 @@ const StudentList:React.FC<StudentListProps> = (props) =>{
                             />
                             {
                             <Button type="primary" 
-                                style={{position: 'absolute', marginLeft: '30vw' }} 
                                 onClick={() => props.removeStudent(item)} 
                                 key={item.title} 
                                 danger 

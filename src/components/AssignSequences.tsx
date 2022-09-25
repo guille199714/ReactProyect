@@ -20,6 +20,7 @@ type RecordType = {
   title: string
   area: string
   materia: string
+  unidad: string
 }
 
 interface Subcategory {
@@ -30,6 +31,12 @@ interface Subcategory {
   lengua: string
 }
 
+interface Sequence {
+  todas: string
+  secuencia2022: string
+  secuencia2021: string
+}
+
 const areaArrayData = [
   { key: 'Ciencia y cultura', value: 'cienciaycultura' },
   { key: 'Matemática', value: 'matematica' },
@@ -37,6 +44,10 @@ const areaArrayData = [
   { key: 'Lengua', value: 'lengua' }
 ]
 
+const sequenceArrayData = [
+  { sequenceKey: 'Secuencia2022', sequenceValue: 'secuencia2022' },
+  { sequenceKey: 'Secuencia2021', sequenceValue: 'secuencia2021' },
+]
 
 const subCategoryData = {
   todas: [],
@@ -52,15 +63,26 @@ const subCategoryData = {
   lengua: ['Lectura', 'Escritura', 'Gramática']
 }
 
+const sequenceMockData = {
+  todas: [],
+  secuencia2022: ['unidad-1-2022', 'unidad-2-2022'],
+  secuencia2021: ['unidad-1-2021', 'unidad-2-2021', 'unidad-3-2021', 'unidad-4-2021']
+}
+
 const mockData: RecordType[] = Array.from({ length: 20 }).map((_, i) => {
   const area = areaArrayData[Math.floor(Math.random() * areaArrayData.length)];
   const { key, value } = area;
   const materias = subCategoryData[value as keyof Subcategory]
 
+  const secuencia = sequenceArrayData[Math.floor(Math.random() * sequenceArrayData.length)];
+  const { sequenceValue } = secuencia;
+  const unidades = sequenceMockData[sequenceValue as keyof Sequence]
+
   return {
-    title: `Secuencia${i + 1}`,
+    title: `Secuencias${i + 1}`,
     area: key,
     materia: materias[Math.floor(Math.random() * materias.length)],
+    unidad: unidades[Math.floor(Math.random() * unidades.length)]
   }
 })
 
@@ -169,12 +191,11 @@ const AssignSequences: React.FC<AssignSequencesProps> = (props: AssignSequencesP
   const [selectedItems, setSelectedItems] = useState<RecordType[]>([])
   const [items, setItems] = useState<RecordType[]>(mockData)
   const [search, setSearch] = useState<string>('')
- 
+  // value para el tree select
   const [areaValue, setAreaValue] = useState<string>()
   const [filteredItems, setFilteredItems] = useState<RecordType[]>(mockData)
 
   const convertToUpperCase = (value: string) => value.toUpperCase().trim();
-
 
   const filterByArea = (newValue: string) => {
     if (newValue === 'Todas') {
@@ -217,7 +238,7 @@ const AssignSequences: React.FC<AssignSequencesProps> = (props: AssignSequencesP
 
   return (
     <Modal
-      title='Asignar Actividades'
+      title='Asignar Secuencias'
       visible={visible}
       footer={false}
       onCancel={() => {
@@ -234,7 +255,7 @@ const AssignSequences: React.FC<AssignSequencesProps> = (props: AssignSequencesP
             <Search
               value={search}
               onChange={(value) => searchByTitle(value.target.value, filteredItems)}
-              placeholder='Buscar Secuencia'
+              placeholder='Buscar Secuencias'
               allowClear
               style={{ width: 250 }}
               enterButton
@@ -283,7 +304,7 @@ const AssignSequences: React.FC<AssignSequencesProps> = (props: AssignSequencesP
                   setSelectedItems([...selectedItems.filter((item) => item.title !== value.title)])
                 }
                 setRecord={() => undefined}
-                isSelectedSequence
+                isSelectedActivity
               />
             </div>
 
