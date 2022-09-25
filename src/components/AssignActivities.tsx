@@ -305,6 +305,11 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
     setSelectedItems([...selectedItems, value])
   }
 
+  const acceptActivies = () => {
+    setSelectedItems([])
+    setVisible(false)
+  }
+
   const clearAllFilter = () => {
     setItems(mockData)
     setFilteredItems(mockData)
@@ -407,10 +412,7 @@ const AssignActivities: React.FC<AssignActivitiesProps> = (props: AssignActiviti
               &nbsp;&nbsp;&nbsp;
               <Button
                 type='primary'
-                onClick={() => {
-                  setVisible(false)
-                  setSelectedItems([])
-                }}
+                onClick={() => acceptActivies()}
               >
                 Aceptar
               </Button>
