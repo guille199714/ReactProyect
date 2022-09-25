@@ -1,18 +1,12 @@
-import React, {Dispatch, SetStateAction} from "react";
-
-import { DeleteOutlined, CloseOutlined } from "@ant-design/icons";
+import React from 'react'
+import {CloseOutlined } from "@ant-design/icons";
 import {Button, List} from 'antd';
 import VirtualList from 'rc-virtual-list';
 
-import '../utils/ParentList.css'
-import {RecordType} from '../utils/fetch-data'
-
-/*  type ParentListProps = {
-    
-    parents: String[]
-    selected: String[]
-    setSelectedParents: Dispatch<SetStateAction<[]>>
-  } */
+type RecordType = {
+    key: string
+    title: string
+}
 
   type StudentListProps = {
     students: RecordType[],
@@ -21,8 +15,6 @@ import {RecordType} from '../utils/fetch-data'
   }
 
 const StudentList:React.FC<StudentListProps> = (props) =>{
-    /*  {parents = ['Pablo Rodriguez', 'Elena Fernandez']}*/
-
     const addNewStudentToList = (item: RecordType) => {
         props.setSelectedStudent(item)
       }
@@ -40,7 +32,7 @@ const StudentList:React.FC<StudentListProps> = (props) =>{
                     height={150}
                     itemHeight={50}
                     itemKey="title"
-                    style={{ position:'absolute', padding: '1vh 0.8vw' }}
+                    style={{ padding: '1vh 0.8vw' }}
                 >
                     {(item: RecordType) => (
                         <List.Item
@@ -51,7 +43,15 @@ const StudentList:React.FC<StudentListProps> = (props) =>{
                             title={item.title}
                             />
                             {
-                            (<Button type="primary" style={{position: 'absolute', marginTop: '-3.4vh', marginLeft: '12vw' }} onClick={() => props.removeStudent(item)} key={item.title} danger shape="circle" size={"small"} icon={<CloseOutlined />} />)
+                            <Button type="primary" 
+                                style={{position: 'absolute', marginLeft: '30vw' }} 
+                                onClick={() => props.removeStudent(item)} 
+                                key={item.title} 
+                                danger 
+                                shape="circle" 
+                                size={"small"} 
+                                icon={<CloseOutlined />} 
+                                />
                             }
                         </List.Item>
                     )}
@@ -59,30 +59,6 @@ const StudentList:React.FC<StudentListProps> = (props) =>{
             </List>
         </>
     )
-
-
-    /*
-    return(
-        <>
-            <div className="ParentList">
-                {parents.map((parent, index) =>
-                    <div key={index} className="content">
-                        <div className="ParentName" >
-                            <p className="text">{parent}</p>
-                        </div>
-                        <div className="DeleteParentButton">
-                            <Button type="primary" shape="circle" icon={<CloseOutlined/>} danger style={{margin: "20px"}}/>
-                        </div>
-                    </div>
-                )}
-            </div>
-            <div className="AddParentButton">
-                <Button className="addBtn" color="currentColor">+</Button>
-            </div>
-        </>
-    )
-
-    */
 }
 
 export default StudentList;
